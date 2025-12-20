@@ -1,0 +1,6 @@
+[workspace]
+members = [
+    "http-client",
+    "http-client-hyper"
+]
+resolver = "3"

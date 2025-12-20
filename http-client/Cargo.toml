@@ -1,0 +1,12 @@
+[package]
+name = "http-client"
+version = "0.1.0"
+edition = "2024"
+
+[features]
+default = []
+json = ["serde", "serde_json"]
+
+[dependencies]
+serde = { version = "1", optional = true }
+serde_json = { version = "1", optional = true }
