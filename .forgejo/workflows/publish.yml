@@ -1,0 +1,73 @@
+name: Publish
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  detect-changes:
+    runs-on: docker
+    outputs:
+      http-client: ${{ steps.changes.outputs.http-client }}
+      http-client-hyper: ${{ steps.changes.outputs.http-client-hyper }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Detect changes
+        id: changes
+        run: |
+          if git diff --name-only HEAD~1 | grep -q '^http-client/'; then
+            echo "http-client=true" >> $FORGEJO_OUTPUT
+          else
+            echo "http-client=false" >> $FORGEJO_OUTPUT
+          fi
+          if git diff --name-only HEAD~1 | grep -q '^http-client-hyper/'; then
+            echo "http-client-hyper=true" >> $FORGEJO_OUTPUT
+          else
+            echo "http-client-hyper=false" >> $FORGEJO_OUTPUT
+          fi
+
+  publish-http-client:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.http-client == 'true'
+    runs-on: docker
+    container:
+      image: cimg/rust:1.92-node
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure registry
+        run: |
+          mkdir -p ~/.cargo
+          echo '[registries.forgejo]' >> ~/.cargo/config.toml
+          echo 'index = "sparse+${{ vars.CARGO_REGISTRY_URL }}"' >> ~/.cargo/config.toml
+
+      - name: Publish http-client
+        run: cargo publish -p http-client --registry forgejo
+        env:
+          CARGO_REGISTRIES_FORGEJO_TOKEN: ${{ secrets.CARGO_TOKEN }}
+
+  publish-http-client-hyper:
+    needs: [detect-changes, publish-http-client]
+    if: |
+      always() &&
+      needs.detect-changes.outputs.http-client-hyper == 'true' &&
+      (needs.publish-http-client.result == 'success' || needs.publish-http-client.result == 'skipped')
+    runs-on: docker
+    container:
+      image: cimg/rust:1.92-node
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure registry
+        run: |
+          mkdir -p ~/.cargo
+          echo '[registries.forgejo]' >> ~/.cargo/config.toml
+          echo 'index = "sparse+${{ vars.CARGO_REGISTRY_URL }}"' >> ~/.cargo/config.toml
+
+      - name: Publish http-client-hyper
+        run: cargo publish -p http-client-hyper --registry forgejo
+        env:
+          CARGO_REGISTRIES_FORGEJO_TOKEN: ${{ secrets.CARGO_TOKEN }}

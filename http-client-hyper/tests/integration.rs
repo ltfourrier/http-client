@@ -2,10 +2,10 @@ use http_client::{HttpClient, HttpError, ResponseBody};
 use http_client_hyper::{HttpHyperClient, HyperError};
 use serde::Deserialize;
 use testcontainers::{
+    GenericImage,
     core::wait::HttpWaitStrategy,
     core::{IntoContainerPort, WaitFor},
     runners::AsyncRunner,
-    GenericImage,
 };
 
 async fn start_httpbin() -> (testcontainers::ContainerAsync<GenericImage>, String) {
@@ -18,8 +18,9 @@ async fn start_httpbin() -> (testcontainers::ContainerAsync<GenericImage>, Strin
         .await
         .expect("Failed to start httpbin container");
 
+    let host = container.get_host().await.unwrap();
     let port = container.get_host_port_ipv4(80).await.unwrap();
-    let base_url = format!("http://127.0.0.1:{}", port);
+    let base_url = format!("http://{}:{}", host, port);
 
     (container, base_url)
 }
@@ -44,7 +45,7 @@ struct HttpbinHeadersResponse {
 
 #[tokio::test]
 async fn test_get_request() {
-    let (_, base_url) = start_httpbin().await;
+    let (_container, base_url) = start_httpbin().await;
     let client = HttpHyperClient::new();
 
     let request = client.get(format!("{}/get", base_url)).build();
@@ -56,7 +57,7 @@ async fn test_get_request() {
 
 #[tokio::test]
 async fn test_post_request() {
-    let (_, base_url) = start_httpbin().await;
+    let (_container, base_url) = start_httpbin().await;
     let client = HttpHyperClient::new();
 
     let request = client
@@ -75,7 +76,7 @@ async fn test_post_request() {
 
 #[tokio::test]
 async fn test_put_request() {
-    let (_, base_url) = start_httpbin().await;
+    let (_container, base_url) = start_httpbin().await;
     let client = HttpHyperClient::new();
 
     let request = client
@@ -94,7 +95,7 @@ async fn test_put_request() {
 
 #[tokio::test]
 async fn test_patch_request() {
-    let (_, base_url) = start_httpbin().await;
+    let (_container, base_url) = start_httpbin().await;
     let client = HttpHyperClient::new();
 
     let request = client
@@ -113,7 +114,7 @@ async fn test_patch_request() {
 
 #[tokio::test]
 async fn test_delete_request() {
-    let (_, base_url) = start_httpbin().await;
+    let (_container, base_url) = start_httpbin().await;
     let client = HttpHyperClient::new();
 
     let request = client.delete(format!("{}/delete", base_url)).build();
@@ -125,7 +126,7 @@ async fn test_delete_request() {
 
 #[tokio::test]
 async fn test_query_parameters() {
-    let (_, base_url) = start_httpbin().await;
+    let (_container, base_url) = start_httpbin().await;
     let client = HttpHyperClient::new();
 
     let request = client
@@ -146,7 +147,7 @@ async fn test_query_parameters() {
 
 #[tokio::test]
 async fn test_query_parameters_with_special_characters() {
-    let (_, base_url) = start_httpbin().await;
+    let (_container, base_url) = start_httpbin().await;
     let client = HttpHyperClient::new();
 
     let request = client
@@ -167,7 +168,7 @@ async fn test_query_parameters_with_special_characters() {
 
 #[tokio::test]
 async fn test_custom_headers() {
-    let (_, base_url) = start_httpbin().await;
+    let (_container, base_url) = start_httpbin().await;
     let client = HttpHyperClient::new();
 
     let request = client
@@ -194,7 +195,7 @@ async fn test_custom_headers() {
 
 #[tokio::test]
 async fn test_response_headers() {
-    let (_, base_url) = start_httpbin().await;
+    let (_container, base_url) = start_httpbin().await;
     let client = HttpHyperClient::new();
 
     let request = client
@@ -215,7 +216,7 @@ async fn test_response_headers() {
 
 #[tokio::test]
 async fn test_post_raw_body() {
-    let (_, base_url) = start_httpbin().await;
+    let (_container, base_url) = start_httpbin().await;
     let client = HttpHyperClient::new();
 
     let body_content = b"raw binary content \x00\x01\x02";
@@ -230,7 +231,7 @@ async fn test_post_raw_body() {
 
 #[tokio::test]
 async fn test_response_status_codes() {
-    let (_, base_url) = start_httpbin().await;
+    let (_container, base_url) = start_httpbin().await;
     let client = HttpHyperClient::new();
 
     // Test 200
@@ -266,7 +267,7 @@ async fn test_response_status_codes() {
 
 #[tokio::test]
 async fn test_response_body_bytes() {
-    let (_, base_url) = start_httpbin().await;
+    let (_container, base_url) = start_httpbin().await;
     let client = HttpHyperClient::new();
 
     let request = client.get(format!("{}/bytes/100", base_url)).build();
@@ -319,7 +320,7 @@ mod json_tests {
 
     #[tokio::test]
     async fn test_json_response() {
-        let (_, base_url) = start_httpbin().await;
+        let (_container, base_url) = start_httpbin().await;
         let client = HttpHyperClient::new();
 
         let request = client.get(format!("{}/get", base_url)).build();
@@ -333,7 +334,7 @@ mod json_tests {
 
     #[tokio::test]
     async fn test_post_json_body() {
-        let (_, base_url) = start_httpbin().await;
+        let (_container, base_url) = start_httpbin().await;
         let client = HttpHyperClient::new();
 
         let payload = TestPayload {
@@ -357,7 +358,7 @@ mod json_tests {
 
     #[tokio::test]
     async fn test_json_content_type_header() {
-        let (_, base_url) = start_httpbin().await;
+        let (_container, base_url) = start_httpbin().await;
         let client = HttpHyperClient::new();
 
         let payload = TestPayload {

@@ -26,14 +26,14 @@
 //! }
 //! ```
 
-mod response;
 mod client;
 mod connector;
 mod error;
+mod response;
 
-pub use response::HyperResponseBody;
 pub use client::{HttpHyperClient, HyperClient};
 pub use error::HyperError;
+pub use response::HyperResponseBody;
 
 #[cfg(feature = "rustls")]
 pub use client::HttpsHyperClient;

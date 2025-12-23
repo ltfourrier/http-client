@@ -1,7 +1,7 @@
 use bytes::Bytes;
 use http_body_util::Full;
 use hyper_util::{
-    client::legacy::{connect::HttpConnector, Client},
+    client::legacy::{Client, connect::HttpConnector},
     rt::TokioExecutor,
 };
 
