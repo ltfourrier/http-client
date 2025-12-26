@@ -624,7 +624,7 @@ dependencies = [
 
 [[package]]
 name = "http-client"
-version = "0.1.0"
+version = "0.0.1"
 dependencies = [
  "serde",
  "serde_json",
@@ -632,7 +632,7 @@ dependencies = [
 
 [[package]]
 name = "http-client-hyper"
-version = "0.1.0"
+version = "0.0.1"
 dependencies = [
  "bytes",
  "http-body-util",
