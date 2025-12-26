@@ -43,6 +43,7 @@ jobs:
           mkdir -p ~/.cargo
           echo '[registries.forgejo]' >> ~/.cargo/config.toml
           echo 'index = "sparse+${{ vars.CARGO_REGISTRY_URL }}"' >> ~/.cargo/config.toml
+          echo 'token = "Bearer ${{ secrets.CARGO_TOKEN }}"' >> ~/.cargo/config.toml
 
       - name: Publish http-client
         run: cargo publish -p http-client --registry forgejo
@@ -66,6 +67,7 @@ jobs:
           mkdir -p ~/.cargo
           echo '[registries.forgejo]' >> ~/.cargo/config.toml
           echo 'index = "sparse+${{ vars.CARGO_REGISTRY_URL }}"' >> ~/.cargo/config.toml
+          echo 'token = "Bearer ${{ secrets.CARGO_TOKEN }}"' >> ~/.cargo/config.toml
 
       - name: Publish http-client-hyper
         run: cargo publish -p http-client-hyper --registry forgejo
