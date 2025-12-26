@@ -19,14 +19,14 @@ jobs:
         id: changes
         run: |
           if git diff --name-only HEAD~1 | grep -q '^http-client/'; then
-            echo "http-client=true" >> $FORGEJO_OUTPUT
+            echo "http-client=true" >> $GITHUB_OUTPUT
           else
-            echo "http-client=false" >> $FORGEJO_OUTPUT
+            echo "http-client=false" >> $GITHUB_OUTPUT
           fi
           if git diff --name-only HEAD~1 | grep -q '^http-client-hyper/'; then
-            echo "http-client-hyper=true" >> $FORGEJO_OUTPUT
+            echo "http-client-hyper=true" >> $GITHUB_OUTPUT
           else
-            echo "http-client-hyper=false" >> $FORGEJO_OUTPUT
+            echo "http-client-hyper=false" >> $GITHUB_OUTPUT
           fi
 
   publish-http-client:
