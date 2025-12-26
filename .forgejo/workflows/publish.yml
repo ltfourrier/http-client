@@ -41,6 +41,7 @@ jobs:
       - name: Configure registry
         run: |
           mkdir -p ~/.cargo
+          echo "[registry]\ndefault = \"forgejo\"\n" >> ~/.cargo/config.toml
           echo '[registries.forgejo]' >> ~/.cargo/config.toml
           echo 'index = "sparse+${{ vars.CARGO_REGISTRY_URL }}"' >> ~/.cargo/config.toml
 
@@ -64,6 +65,7 @@ jobs:
       - name: Configure registry
         run: |
           mkdir -p ~/.cargo
+          echo "[registry]\ndefault = \"forgejo\"\n" >> ~/.cargo/config.toml
           echo '[registries.forgejo]' >> ~/.cargo/config.toml
           echo 'index = "sparse+${{ vars.CARGO_REGISTRY_URL }}"' >> ~/.cargo/config.toml
 
