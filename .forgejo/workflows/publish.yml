@@ -41,14 +41,14 @@ jobs:
       - name: Configure registry
         run: |
           mkdir -p ~/.cargo
-          echo "[registry]\ndefault = \"forgejo\"\n" >> ~/.cargo/config.toml
-          echo '[registries.forgejo]' >> ~/.cargo/config.toml
+          echo "[registry]\ndefault = \"ltfnet\"\n" >> ~/.cargo/config.toml
+          echo '[registries.ltfnet]' >> ~/.cargo/config.toml
           echo 'index = "sparse+${{ vars.CARGO_REGISTRY_URL }}"' >> ~/.cargo/config.toml
 
       - name: Publish http-client
-        run: cargo publish -p http-client --registry forgejo
+        run: cargo publish -p http-client --registry ltfnet
         env:
-          CARGO_REGISTRIES_FORGEJO_TOKEN: "Bearer ${{ secrets.CARGO_TOKEN }}"
+          CARGO_REGISTRIES_LTFNET_TOKEN: "Bearer ${{ secrets.CARGO_TOKEN }}"
 
   publish-http-client-hyper:
     needs: [detect-changes, publish-http-client]
@@ -65,11 +65,11 @@ jobs:
       - name: Configure registry
         run: |
           mkdir -p ~/.cargo
-          echo "[registry]\ndefault = \"forgejo\"\n" >> ~/.cargo/config.toml
-          echo '[registries.forgejo]' >> ~/.cargo/config.toml
+          echo "[registry]\ndefault = \"ltfnet\"\n" >> ~/.cargo/config.toml
+          echo '[registries.ltfnet]' >> ~/.cargo/config.toml
           echo 'index = "sparse+${{ vars.CARGO_REGISTRY_URL }}"' >> ~/.cargo/config.toml
 
       - name: Publish http-client-hyper
-        run: cargo publish -p http-client-hyper --registry forgejo
+        run: cargo publish -p http-client-hyper --registry ltfnet
         env:
-          CARGO_REGISTRIES_FORGEJO_TOKEN: "Bearer ${{ secrets.CARGO_TOKEN }}"
+          CARGO_REGISTRIES_LTFNET_TOKEN: "Bearer ${{ secrets.CARGO_TOKEN }}"

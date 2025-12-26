@@ -10,7 +10,7 @@ json = ["http-client/json", "dep:serde", "dep:serde_json"]
 rustls = ["dep:hyper-rustls", "dep:rustls"]
 
 [dependencies]
-http-client = { version = "0.0.1", path = "../http-client" }
+http-client = { version = "0.0.1", registry = "ltfnet", path = "../http-client" }
 hyper = { version = "1", features = ["client", "http1", "http2"] }
 hyper-util = { version = "0.1", features = ["client", "client-legacy", "tokio", "http1", "http2"] }
 http-body-util = "0.1"
