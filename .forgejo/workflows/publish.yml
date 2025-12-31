@@ -35,11 +35,16 @@ jobs:
     runs-on: docker
     container:
       image: forge.ltfourrier.net/laurent/rust-node:latest
+    env:
+      FORGEJO_USERNAME: ${{ vars.FORGEJO_USERNAME }}
+      FORGEJO_TOKEN: ${{ secrets.FORGEJO_TOKEN }}
     steps:
       - uses: actions/checkout@v4
 
       - name: Publish http-client
-        run: cargo publish -p http-client --registry ltfnet
+        run: |
+          /opt/ltfnet/setup-cargo-registry.sh
+          cargo publish -p http-client --registry ltfnet
 
   publish-http-client-hyper:
     needs: [detect-changes, publish-http-client]
@@ -50,8 +55,13 @@ jobs:
     runs-on: docker
     container:
       image: forge.ltfourrier.net/laurent/rust-node:latest
+    env:
+      FORGEJO_USERNAME: ${{ vars.FORGEJO_USERNAME }}
+      FORGEJO_TOKEN: ${{ secrets.FORGEJO_TOKEN }}
     steps:
       - uses: actions/checkout@v4
 
       - name: Publish http-client-hyper
-        run: cargo publish -p http-client-hyper --registry ltfnet
+        run: |
+          /opt/ltfnet/setup-cargo-registry.sh
+          cargo publish -p http-client-hyper --registry ltfnet

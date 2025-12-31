@@ -9,8 +9,14 @@ jobs:
     runs-on: docker
     container:
       image: forge.ltfourrier.net/laurent/rust-node:latest
+    env:
+      FORGEJO_USERNAME: ${{ vars.FORGEJO_USERNAME }}
+      FORGEJO_TOKEN: ${{ secrets.FORGEJO_TOKEN }}
     steps:
       - uses: actions/checkout@v4
+
+      - name: Configure Cargo registry
+        run: /opt/ltfnet/setup-cargo-registry.sh
 
       - name: Check formatting
         run: cargo fmt --check
@@ -22,8 +28,14 @@ jobs:
     runs-on: docker
     container:
       image: forge.ltfourrier.net/laurent/rust-node:latest
+    env:
+      FORGEJO_USERNAME: ${{ vars.FORGEJO_USERNAME }}
+      FORGEJO_TOKEN: ${{ secrets.FORGEJO_TOKEN }}
     steps:
       - uses: actions/checkout@v4
+
+      - name: Configure Cargo registry
+        run: /opt/ltfnet/setup-cargo-registry.sh
 
       - name: Debug Docker access
         run: |
