@@ -34,21 +34,12 @@ jobs:
     if: needs.detect-changes.outputs.http-client == 'true'
     runs-on: docker
     container:
-      image: cimg/rust:1.92-node
+      image: forge.ltfourrier.net/laurent/rust-node:latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: Configure registry
-        run: |
-          mkdir -p ~/.cargo
-          echo "[registry]\ndefault = \"ltfnet\"\n" >> ~/.cargo/config.toml
-          echo '[registries.ltfnet]' >> ~/.cargo/config.toml
-          echo 'index = "sparse+${{ vars.CARGO_REGISTRY_URL }}"' >> ~/.cargo/config.toml
-
       - name: Publish http-client
         run: cargo publish -p http-client --registry ltfnet
-        env:
-          CARGO_REGISTRIES_LTFNET_TOKEN: "Bearer ${{ secrets.CARGO_TOKEN }}"
 
   publish-http-client-hyper:
     needs: [detect-changes, publish-http-client]
@@ -58,18 +49,9 @@ jobs:
       (needs.publish-http-client.result == 'success' || needs.publish-http-client.result == 'skipped')
     runs-on: docker
     container:
-      image: cimg/rust:1.92-node
+      image: forge.ltfourrier.net/laurent/rust-node:latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: Configure registry
-        run: |
-          mkdir -p ~/.cargo
-          echo "[registry]\ndefault = \"ltfnet\"\n" >> ~/.cargo/config.toml
-          echo '[registries.ltfnet]' >> ~/.cargo/config.toml
-          echo 'index = "sparse+${{ vars.CARGO_REGISTRY_URL }}"' >> ~/.cargo/config.toml
-
       - name: Publish http-client-hyper
         run: cargo publish -p http-client-hyper --registry ltfnet
-        env:
-          CARGO_REGISTRIES_LTFNET_TOKEN: "Bearer ${{ secrets.CARGO_TOKEN }}"
